@@ -1,0 +1,7 @@
+sortefi-ta
+Copyright (c) 2026 Sortefi. Released under the MIT License (see LICENSE).
+
+Acknowledgement: the building-block calculations in sortefi_ta/_ta were written to give the
+same results as pandas-ta 0.4.67b0 (https://github.com/twopirllc/pandas-ta, MIT License),
+which these indicators were originally developed and tested against. sortefi-ta does not
+depend on or include pandas-ta.
