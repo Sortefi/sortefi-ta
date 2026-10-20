@@ -1,10 +1,17 @@
 # sortefi-ta
 
+[![PyPI](https://img.shields.io/pypi/v/sortefi-ta)](https://pypi.org/project/sortefi-ta/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://pypi.org/project/sortefi-ta/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Docs](https://img.shields.io/badge/docs-sortefi.com-8E5E47)](https://www.sortefi.com/docs/sortefi-ta)
+
 Technical indicators, candlestick patterns, chart patterns and price maths for **pandas**.
 Pure numpy + pandas: `pip install sortefi-ta` and go, no C library to compile.
 
 Built and used in production by [Sortefi](https://sortefi.com), where you can describe a
 stock, crypto or forex screen in plain English and get the matching symbols.
+
+Step-by-step install and usage guide: **[sortefi.com/docs/sortefi-ta](https://www.sortefi.com/docs/sortefi-ta)**
 
 ## Install
 
