@@ -3,3 +3,6 @@ __pycache__/
 build/
 dist/
 .pytest_cache/
+
+# real exchange data used by local-only tests — never published (licensing)
+tests/options/market_data/

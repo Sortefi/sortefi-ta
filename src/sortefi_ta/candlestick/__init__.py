@@ -37,6 +37,8 @@ _PATTERN_MODULES: dict[str, str] = {
     "bearish_kicking":         "bearish_kicking",
     "rising_window":           "rising_window",
     "falling_window":          "falling_window",
+    "flat_close":              "flat_close",
+    "flat_open":               "flat_open",
     "bullish_meeting_lines":   "bullish_meeting_lines",
     "bearish_meeting_lines":   "bearish_meeting_lines",
     "bullish_separating_lines":"bullish_separating_lines",

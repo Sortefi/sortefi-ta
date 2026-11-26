@@ -9,6 +9,7 @@ from .kvo import calc_kvo
 from .pvt import calc_pvt
 from .nvi import calc_nvi
 from .rvol import calc_rvol
+from .vpci import calc_vpci
 from .obv_divergence import calc_obv_divergence
 from .cmf_divergence import calc_cmf_divergence
 from .volume_divergence import calc_volume_divergence
@@ -26,6 +27,7 @@ __all__ = [
     "calc_pvt",
     "calc_nvi",
     "calc_rvol",
+    "calc_vpci",
     "calc_obv_divergence",
     "calc_cmf_divergence",
     "calc_volume_divergence",

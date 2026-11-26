@@ -13,6 +13,22 @@ from sortefi_ta._ta._base import EPS, _long_enough, _named, _nonzero_range, ema,
 __all__ = ["rsi", "macd", "stochrsi", "tsi", "uo", "ppo", "kdj", "fisher", "ao", "bop", "willr", "mfi"]
 
 
+# On a perfectly flat price the difference of two moving averages should be exactly 0, but
+# floating-point summation leaves tiny residues (about 1e-18 to 1e-11) that can flip a "> 0" /
+# "< 0" check. Values within FLAT_REL of the price level are set to exactly 0. Real moves are far
+# larger (one tick on a 100,000 price is 1e-7 of it), so no non-flat output changes.
+FLAT_REL = 1e-12
+
+
+def _snap_zero(values: pd.Series, scale) -> pd.Series:
+    """`values` with every entry whose size is <= FLAT_REL x |scale| set to exactly 0 (NaN stays NaN)."""
+    v = values.to_numpy(dtype=float)
+    tiny = np.abs(v) <= FLAT_REL * np.abs(np.asarray(scale, dtype=float))
+    if not tiny.any():
+        return values
+    return pd.Series(np.where(tiny, 0.0, v), index=values.index, name=values.name)
+
+
 def _all_nan(s) -> bool:
     return bool(np.isnan(np.asarray(s, dtype=float)).all())
 
@@ -43,9 +59,12 @@ def macd(close: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9, **_)
         fast, slow = slow, fast
     if not _long_enough(close, slow + signal - 1):
         return None
-    line = ema(close, length=fast) - ema(close, length=slow)
+    slow_ema = ema(close, length=slow)
+    line = ema(close, length=fast) - slow_ema
     sig = ema(line.loc[line.first_valid_index():], length=signal)
     hist = line - sig
+    scale = slow_ema.reindex(close.index)          # price units: flat-price residue -> exactly 0
+    line, sig, hist = (_snap_zero(x.reindex(close.index), scale) for x in (line, sig, hist))
     tag = f"_{fast}_{slow}_{signal}"
     return pd.DataFrame({f"MACD{tag}": line, f"MACDh{tag}": hist, f"MACDs{tag}": sig},
                         index=close.index)
@@ -121,8 +140,11 @@ def ppo(close: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9, scala
     if _all_nan(line):
         return None
     sig = ema(line, length=signal)
+    hist = line - sig
+    # PPO is already relative to the slow average, so FLAT_REL x scalar is the same tolerance
+    line, sig, hist = (_snap_zero(x, float(scalar)) for x in (line, sig, hist))
     tag = f"_{fast}_{slow}_{signal}"
-    return pd.DataFrame({f"PPO{tag}": line, f"PPOh{tag}": line - sig, f"PPOs{tag}": sig},
+    return pd.DataFrame({f"PPO{tag}": line, f"PPOh{tag}": hist, f"PPOs{tag}": sig},
                         index=close.index)
 
 
@@ -173,7 +195,9 @@ def ao(high: pd.Series, low: pd.Series, fast: int = 5, slow: int = 34, **_):
     if not all(_long_enough(s, max(fast, slow)) for s in (high, low)):
         return None
     mid = 0.5 * (high + low)
-    return _named(sma(mid, length=fast) - sma(mid, length=slow), f"AO_{fast}_{slow}")
+    slow_ma = sma(mid, length=slow)
+    out = _snap_zero(sma(mid, length=fast) - slow_ma, slow_ma)   # flat-price residue -> exactly 0
+    return _named(out, f"AO_{fast}_{slow}")
 
 
 def bop(open_: pd.Series, high: pd.Series, low: pd.Series, close: pd.Series, scalar: float = 1, **_):

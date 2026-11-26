@@ -22,6 +22,7 @@ from .smma import calc_smma
 from .zlema import calc_zlema
 from .alligator import calc_alligator
 from .ssl_channel import calc_ssl_channel
+from .renko import calc_renko, renko_bricks
 
 __all__ = [
     "calc_sma",
@@ -48,4 +49,6 @@ __all__ = [
     "calc_zlema",
     "calc_alligator",
     "calc_ssl_channel",
+    "calc_renko",
+    "renko_bricks",
 ]

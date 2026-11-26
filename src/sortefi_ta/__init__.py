@@ -70,6 +70,8 @@ from sortefi_ta.trend import (
     calc_alma,
     calc_alligator,
     calc_ssl_channel,
+    calc_renko,
+    renko_bricks,
 )
 
 # -- Volatility --
@@ -111,6 +113,7 @@ from sortefi_ta.volume import (
     calc_pvt,
     calc_nvi,
     calc_rvol,
+    calc_vpci,
 )
 
 # -- Support/Resistance --
@@ -163,7 +166,14 @@ from sortefi_ta.statistics import (
     calc_kurtosis,
     calc_entropy,
     calc_mad,
+    calc_hurst,
 )
+
+# -- Options maths (array-in / array-out; not in INDICATOR_FUNCTIONS, which take a DataFrame) --
+from sortefi_ta import options  # noqa: F401  (ta.options.black76_greeks(...), etc.)
+
+# -- Performance and risk statistics (scalars over a return series; not in INDICATOR_FUNCTIONS) --
+from sortefi_ta import performance  # noqa: F401  (ta.performance.sharpe_ratio(...), etc.)
 
 # High-level divergence helpers (deterministic active/historical slicing + ranking)
 from sortefi_ta.divergence_signal import divergence_signal, divergence_strength
@@ -229,6 +239,7 @@ INDICATOR_FUNCTIONS: dict[str, callable] = {
     "calc_alma": calc_alma,
     "calc_alligator": calc_alligator,
     "calc_ssl_channel": calc_ssl_channel,
+    "calc_renko": calc_renko,
     # Volatility
     "calc_bbands": calc_bbands,
     "calc_atr": calc_atr,
@@ -264,6 +275,7 @@ INDICATOR_FUNCTIONS: dict[str, callable] = {
     "calc_pvt": calc_pvt,
     "calc_nvi": calc_nvi,
     "calc_rvol": calc_rvol,
+    "calc_vpci": calc_vpci,
     # Support/Resistance
     "calc_pivot_points": calc_pivot_points,
     "calc_fibonacci_levels": calc_fibonacci_levels,
@@ -303,4 +315,5 @@ INDICATOR_FUNCTIONS: dict[str, callable] = {
     "calc_kurtosis": calc_kurtosis,
     "calc_entropy": calc_entropy,
     "calc_mad": calc_mad,
+    "calc_hurst": calc_hurst,
 }

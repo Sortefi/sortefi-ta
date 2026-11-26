@@ -26,7 +26,7 @@ def calc_vwap(df: pd.DataFrame, anchor: str | None = None) -> dict[str, np.ndarr
 
     Returns:
         vwap          — cumulative VWAP, resetting per anchor period (ndarray)
-        vwap_std      — volume-weighted std dev of hl2 around VWAP (ndarray)
+        vwap_std      — volume-weighted std dev of hlc3 around VWAP (ndarray)
         vwap_upper_1 / vwap_lower_1 — VWAP +/- 1 std dev (ndarray)
         vwap_upper_2 / vwap_lower_2 — VWAP +/- 2 std dev (ndarray)
         vwap_upper_3 / vwap_lower_3 — VWAP +/- 3 std dev (ndarray)
@@ -56,9 +56,12 @@ def calc_vwap(df: pd.DataFrame, anchor: str | None = None) -> dict[str, np.ndarr
 
     high = df["high"].to_numpy(dtype=float)
     low = df["low"].to_numpy(dtype=float)
+    close = df["close"].to_numpy(dtype=float)
     vol = df["volume"].to_numpy(dtype=float)
 
-    # TV VWAP uses hl2 = (high+low)/2
+    # TradingView's VWAP source default is hlc3 = (high+low+close)/3.
+    # hl2 stays only for the volume-profile binning below (POC / VAL / VAH).
+    hlc3 = (high + low + close) / 3.0
     hl2 = (high + low) / 2.0
 
     # ---- Determine reset boundaries ----
@@ -100,7 +103,7 @@ def calc_vwap(df: pd.DataFrame, anchor: str | None = None) -> dict[str, np.ndarr
             running_sq_vol = 0.0
 
         v = vol[i] if np.isfinite(vol[i]) else 0.0
-        h = hl2[i] if np.isfinite(hl2[i]) else 0.0
+        h = hlc3[i] if np.isfinite(hlc3[i]) else 0.0
 
         running_tp_vol += h * v
         running_vol += v
@@ -112,7 +115,7 @@ def calc_vwap(df: pd.DataFrame, anchor: str | None = None) -> dict[str, np.ndarr
 
     vwap = np.where(cum_vol > 0, cum_tp_vol / cum_vol, np.nan)
 
-    # ---- Volume-weighted std dev: TV formula = sqrt(sum(vol*hl2^2)/sum(vol) - vwap^2) ----
+    # ---- Volume-weighted std dev: TV formula = sqrt(sum(vol*hlc3^2)/sum(vol) - vwap^2) ----
     variance = np.where(cum_vol > 0, np.maximum(cum_sq_vol / cum_vol - vwap ** 2, 0.0), np.nan)
     vwap_std = np.sqrt(variance)
 

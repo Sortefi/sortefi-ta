@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sortefi-ta"
-version = "0.1.0"
-description = "Technical indicators, candlestick patterns, chart patterns and price maths for pandas — pure numpy/pandas, no C install."
+version = "2.0.0"
+description = "Technical indicators, candlestick patterns, chart patterns, options maths and performance statistics for pandas — pure numpy/pandas, no C install."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE", "NOTICE"]
 authors = [{ name = "Sortefi" }]
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "pandas>=2.0"]
-keywords = ["technical-analysis", "indicators", "candlestick", "trading", "pandas", "screener"]
+keywords = ["technical-analysis", "indicators", "candlestick", "trading", "pandas", "screener", "options", "greeks", "implied-volatility", "renko", "sharpe-ratio"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
